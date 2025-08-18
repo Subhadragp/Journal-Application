@@ -1,7 +1,9 @@
 package com.subcodes.journalApp.controller;
 
 import com.subcodes.journalApp.model.JournalEntry;
+import com.subcodes.journalApp.model.User;
 import com.subcodes.journalApp.service.JournalEntryService;
+import com.subcodes.journalApp.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,15 @@ public class JournalEntryController {
     @Autowired
     private JournalEntryService journalEntryService;
 
+    @Autowired
+    private UserService userService;
 
+
+    @GetMapping("/{username}")
+    public ResponseEntity<List<JournalEntry>> getUserJournalEntries(@PathVariable String username) {
+        User user =  userService.getUserByUserName(username);
+        return new ResponseEntity<>(user.getJournalEntries(), HttpStatus.OK);
+    }
     @GetMapping
     public ResponseEntity<List<JournalEntry>> getJournalEntries() {
         return new ResponseEntity<>(journalEntryService.getJournalEntries(), HttpStatus.OK);
