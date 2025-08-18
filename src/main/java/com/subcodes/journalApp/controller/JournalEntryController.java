@@ -25,18 +25,13 @@ public class JournalEntryController {
 
     @GetMapping("/{username}")
     public ResponseEntity<List<JournalEntry>> getUserJournalEntries(@PathVariable String username) {
-        User user =  userService.getUserByUserName(username);
-        return new ResponseEntity<>(user.getJournalEntries(), HttpStatus.OK);
-    }
-    @GetMapping
-    public ResponseEntity<List<JournalEntry>> getJournalEntries() {
-        return new ResponseEntity<>(journalEntryService.getJournalEntries(), HttpStatus.OK);
+        return new ResponseEntity<>(journalEntryService.getUserJournalEntries(username), HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<JournalEntry> createJournalEntry(@RequestBody JournalEntry journalEntry) {
+    @PostMapping("/{username}")
+    public ResponseEntity<JournalEntry> createJournalEntry(@RequestBody JournalEntry journalEntry, @PathVariable String username) {
         try{
-            journalEntryService.createJournalEntry(journalEntry);
+            journalEntryService.createJournalEntry(journalEntry, username);
             return new ResponseEntity<>(journalEntry, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -50,9 +45,9 @@ public class JournalEntryController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/id/{myId}")
-    public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId myId) {
-        journalEntryService.deleteJournalEntryById(myId);
+    @DeleteMapping("/id/{username}/{myId}")
+    public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId myId, @PathVariable String username) {
+        journalEntryService.deleteJournalEntryById(myId, username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

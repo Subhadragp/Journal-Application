@@ -1,6 +1,7 @@
 package com.subcodes.journalApp.service;
 
 import com.subcodes.journalApp.model.JournalEntry;
+import com.subcodes.journalApp.model.User;
 import com.subcodes.journalApp.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +17,31 @@ public class JournalEntryService {
     @Autowired
     private JournalEntryRepository journalEntryRepository;
 
-    public List<JournalEntry> getJournalEntries() {
-        return journalEntryRepository.findAll();
+    @Autowired
+    private UserService userService;
+
+
+    public List<JournalEntry> getUserJournalEntries(String username) {
+        User user = userService.getUserByUserName(username);
+        return user.getJournalEntries();
     }
 
-    public void createJournalEntry(JournalEntry journalEntry) {
+    public void createJournalEntry(JournalEntry journalEntry, String username) {
+        User userFromDb = userService.getUserByUserName(username);
         journalEntry.setDate(LocalDateTime.now());
-        journalEntryRepository.save(journalEntry);
+        JournalEntry saved = journalEntryRepository.save(journalEntry);
+        userFromDb.getJournalEntries().add(saved);
+        userService.saveUser(userFromDb);
     }
 
     public Optional<JournalEntry> getJournalEntryById(ObjectId myId) {
         return journalEntryRepository.findById(myId);
     }
 
-    public void deleteJournalEntryById(ObjectId myId) {
+    public void deleteJournalEntryById(ObjectId myId, String username) {
+        User userFromDb = userService.getUserByUserName(username);
+        userFromDb.getJournalEntries().removeIf(j -> j.getId().equals(myId));
+        userService.saveUser(userFromDb);
         journalEntryRepository.deleteById(myId);
     }
 

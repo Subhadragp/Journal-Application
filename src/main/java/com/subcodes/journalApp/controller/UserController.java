@@ -1,6 +1,5 @@
 package com.subcodes.journalApp.controller;
 
-import com.subcodes.journalApp.model.JournalEntry;
 import com.subcodes.journalApp.model.User;
 import com.subcodes.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class UserController {
 
     @PostMapping
     public void createUser(@RequestBody User user) {
-        userService.createUser(user);
+        userService.saveUser(user);
     }
 
     @PutMapping("/{username}")
@@ -33,7 +32,7 @@ public class UserController {
         if (userFromDb != null) {
             userFromDb.setUserName(user.getUserName());
             userFromDb.setPassword(user.getPassword());
-            userService.createUser(userFromDb);
+            userService.saveUser(userFromDb);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
