@@ -35,4 +35,11 @@ public class UserController {
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(@RequestBody User user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        userService.deleteUser(authentication.getName());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

@@ -48,4 +48,8 @@ public class UserService {
     public void deleteUserById(ObjectId id) {
         userRepository.deleteById(id);
     }
+
+    public void deleteUser(String username) {
+        userRepository.deleteByUserName(username);
+    }
 }
