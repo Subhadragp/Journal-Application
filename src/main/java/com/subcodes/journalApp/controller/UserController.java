@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 //
 //    @GetMapping
 //    public List<User> getAllUsers() {
@@ -30,7 +33,7 @@ public class UserController {
         User userFromDb = userService.getUserByUserName(username);
         if (userFromDb != null) {
             userFromDb.setUserName(user.getUserName());
-            userFromDb.setPassword(user.getPassword());
+            userFromDb.setPassword(passwordEncoder.encode(user.getPassword()));
             userService.saveUser(userFromDb);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
