@@ -57,25 +57,32 @@ public class JournalEntryController {
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        return journalEntryService.getJournalEntryById(myId)
-//                .map(entry -> new ResponseEntity<>(entry, HttpStatus.OK))
-//                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/id/{myId}")
     public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId myId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        journalEntryService.deleteJournalEntryById(myId, username);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        boolean removed = journalEntryService.deleteJournalEntryById(myId, username);
+        if (removed) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/id/{id}")
     public ResponseEntity<JournalEntry> updateJournalById(@PathVariable ObjectId id, @RequestBody JournalEntry newEntry) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return journalEntryService.updateJournalEntryById(id, newEntry)
-                .map(updated -> new ResponseEntity<>(updated, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        String username = authentication.getName();
+        User user = userService.getUserByUserName(username);
+        List<JournalEntry> collect = user.getJournalEntries().stream().filter(entry -> entry.getId().equals(id)).toList();
+        if (!collect.isEmpty()) {
+            Optional<JournalEntry> journalEntry = journalEntryService.getJournalEntryById(id);
+            if (journalEntry.isPresent()) {
+                return journalEntryService.updateJournalEntryById(id, newEntry)
+                        .map(updated -> new ResponseEntity<>(updated, HttpStatus.OK))
+                        .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }
