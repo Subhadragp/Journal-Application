@@ -1,6 +1,7 @@
 package com.subcodes.journalApp.controller;
 
 import com.subcodes.journalApp.model.JournalEntry;
+import com.subcodes.journalApp.model.User;
 import com.subcodes.journalApp.service.JournalEntryService;
 import com.subcodes.journalApp.service.UserService;
 import org.bson.types.ObjectId;
@@ -46,9 +47,19 @@ public class JournalEntryController {
     @GetMapping("/id/{myId}")
     public ResponseEntity<JournalEntry> getJournalEntryById(@PathVariable ObjectId myId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return journalEntryService.getJournalEntryById(myId)
-                .map(entry -> new ResponseEntity<>(entry, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        String username = authentication.getName();
+        User user = userService.getUserByUserName(username);
+        List<JournalEntry> collect = user.getJournalEntries().stream().filter(entry -> entry.getId().equals(myId)).toList();
+        if (!collect.isEmpty()) {
+            Optional<JournalEntry> journalEntry = journalEntryService.getJournalEntryById(myId);
+            if (journalEntry.isPresent()) {
+                return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        return journalEntryService.getJournalEntryById(myId)
+//                .map(entry -> new ResponseEntity<>(entry, HttpStatus.OK))
+//                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/id/{myId}")
