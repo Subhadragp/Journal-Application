@@ -2,7 +2,10 @@ package com.subcodes.journalApp.service;
 
 import com.subcodes.journalApp.model.User;
 import com.subcodes.journalApp.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
@@ -20,11 +24,16 @@ public class UserService {
 
     private static final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
+//    private static final Logger logger = LoggerFactory.getLogger(UserService.class);/
+
     public void saveUser(User user) {
         if (getUserByUserName(user.getUserName()) != null) {
             userRepository.save(user);
         }
-        else saveNewUser(user);
+        else {
+            log.warn("User with userName '{}' not found, creating new user", user.getUserName());
+            saveNewUser(user);
+        }
     }
 
     public void saveNewUser(User user) {
