@@ -15,7 +15,7 @@ public class WeatherResponse {
 
     @Getter
     @Setter
-    private class AirQuality{
+    public static class AirQuality{
         private String co;
         private String no2;
         private String o3;
@@ -30,7 +30,7 @@ public class WeatherResponse {
 
     @Getter
     @Setter
-    private class Astro{
+    public static class Astro{
         private String sunrise;
         private String sunset;
         private String moonrise;
@@ -41,7 +41,7 @@ public class WeatherResponse {
 
     @Getter
     @Setter
-    private class Current{
+    public static class Current{
         private String observation_time;
         private int temperature;
         private List<String> weather_descriptions;
@@ -62,7 +62,7 @@ public class WeatherResponse {
 
     @Getter
     @Setter
-    private class Location{
+    public static class Location{
         private String name;
         private String country;
         private String region;

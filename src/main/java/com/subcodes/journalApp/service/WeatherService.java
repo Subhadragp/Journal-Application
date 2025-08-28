@@ -22,6 +22,4 @@ public class WeatherService {
         ResponseEntity<WeatherResponse> response = restTemplate.exchange(finalAPI, HttpMethod.GET, null, WeatherResponse.class);
         return response.getBody();
     }
-
-    public void fun(){}
 }
