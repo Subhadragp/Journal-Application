@@ -10,7 +10,6 @@ FROM eclipse-temurin:22-jre
 WORKDIR /app
 # Copy JAR built in first stage
 COPY --from=build /src/target/*.jar /app/app.jar
-COPY .env /app/.env
 
 # Expose the port (value will come from .env → docker-compose.yml)
 EXPOSE ${APP_PORT}
