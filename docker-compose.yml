@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  journalapp:
+    build: .
+    container_name: journalapp_container
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env
+    environment:
+      # You can override or add more variables here if needed
+      JAVA_OPTS: "-Xms256m -Xmx512m"
+    restart: always
