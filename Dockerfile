@@ -10,6 +10,7 @@ FROM eclipse-temurin:22-jre
 WORKDIR /app
 # Copy JAR built in first stage
 COPY --from=build /src/target/*.jar /app/app.jar
+COPY .env /app/.env
 
 # Expose the port (value will come from .env → docker-compose.yml)
 EXPOSE ${APP_PORT}
@@ -18,4 +19,4 @@ EXPOSE ${APP_PORT}
 ENV JAVA_OPTS=""
 
 # Use APP_PORT instead of hardcoding PORT
-CMD ["sh", "-c", "java $JAVA_Odd .PTS -Dserver.port=${APP_PORT} -jar /app/app.jar"]
+CMD ["sh", "-c", "java $JAVA_OPTS -Dserver.port=${APP_PORT} -jar /app/app.jar"]
