@@ -1,0 +1,36 @@
+spring:
+  profiles:
+    active: dev
+
+# spring active profile can be set using configuration as well, -> --spring.profile.active=?
+# using maven -> -D..... or even the command prompt/terminal
+# using jenkins we can automate which profile to use.. by supplying what command to run on click of a button
+# you can even tell a class -> create bean when the profile is set to this.... @Profile("prod")
+
+# multiple profiles can be given at a time
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+#   creates bean for JavaMailSender
+
+logging:
+  level:
+    net:
+      journalApplication: DEBUG
+
+weather:
+  api:
+    key: ${WEATHER_API_KEY}
+
+server:
+  port: 8081
